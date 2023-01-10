@@ -41,7 +41,7 @@ class ArrayFileCache implements CacheInterface
         return file_put_contents($this->getCacheFilePath(), '<?php return ' . var_export($data, true) . ';' . PHP_EOL);
     }
 
-    public function get(string $key, mixed $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return array_key_exists($key, $this->getData()) ? $this->getData()[$key] : $default;
     }
@@ -62,7 +62,7 @@ class ArrayFileCache implements CacheInterface
         return $this->saveData($data);
     }
 
-    public function getMultiple(iterable $keys, mixed $default = null): array
+    public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         $result = [];
         foreach ($keys as $key) {
