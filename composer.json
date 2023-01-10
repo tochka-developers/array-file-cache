@@ -1,6 +1,7 @@
 {
     "name": "tochka-developers/array-file-cache",
     "description": "Array file cache (psr/simple-cache implementation)",
+    "license": "MIT",
     "type": "package",
     "authors": [
         {
