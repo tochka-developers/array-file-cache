@@ -41,12 +41,12 @@ class ArrayFileCache implements CacheInterface
         file_put_contents($this->getCacheFilePath(), '<?php return ' . var_export($data, true) . ';' . PHP_EOL);
     }
 
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null)
     {
         return array_key_exists($key, $this->getData()) ? $this->getData()[$key] : $default;
     }
 
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null)
     {
         $data = $this->getData();
         $data[$key] = $value;
@@ -54,7 +54,7 @@ class ArrayFileCache implements CacheInterface
         $this->saveData($data);
     }
 
-    public function delete($key)
+    public function delete(string $key)
     {
         $data = $this->getData();
         unset($data[$key]);
@@ -62,7 +62,7 @@ class ArrayFileCache implements CacheInterface
         $this->saveData($data);
     }
 
-    public function getMultiple($keys, $default = null): array
+    public function getMultiple(iterable $keys, mixed $default = null): array
     {
         $result = [];
         foreach ($keys as $key) {
@@ -72,7 +72,7 @@ class ArrayFileCache implements CacheInterface
         return $result;
     }
 
-    public function setMultiple($values, $ttl = null)
+    public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null)
     {
         $data = $this->getData();
 
@@ -87,7 +87,7 @@ class ArrayFileCache implements CacheInterface
         $this->saveData(array_merge($data, $mergedValues));
     }
 
-    public function deleteMultiple($keys)
+    public function deleteMultiple(iterable $keys)
     {
         $data = $this->getData();
 
@@ -108,7 +108,7 @@ class ArrayFileCache implements CacheInterface
         }
     }
 
-    public function has($key): bool
+    public function has(string $key): bool
     {
         return array_key_exists($key, $this->getData());
     }
