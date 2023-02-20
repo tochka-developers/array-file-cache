@@ -9,11 +9,17 @@ class ArrayFileCache implements CacheInterface
     private ?array $data = null;
     private string $cachePath;
     private string $cacheName;
+    private SerializerInterface $serializer;
 
-    public function __construct(string $cachePath, string $cacheName)
+    public function __construct(string $cachePath, string $cacheName, ?SerializerInterface $serializer = null)
     {
         $this->cachePath = $cachePath;
         $this->cacheName = $cacheName;
+        if ($serializer === null) {
+            $this->serializer = new DefaultSerializer();
+        } else {
+            $this->serializer = $serializer;
+        }
     }
 
     protected function getData(): array
@@ -21,7 +27,7 @@ class ArrayFileCache implements CacheInterface
         if ($this->data === null) {
             $filePath = $this->getCacheFilePath();
             if (file_exists($filePath)) {
-                $this->data = require $filePath;
+                $this->data = $this->serializer->unserialize($filePath);
             } else {
                 $this->data = [];
             }
@@ -37,8 +43,7 @@ class ArrayFileCache implements CacheInterface
         }
 
         $this->data = $data;
-
-        return file_put_contents($this->getCacheFilePath(), '<?php return ' . var_export($data, true) . ';' . PHP_EOL);
+        return $this->serializer->serialize($data, $this->getCacheFilePath());
     }
 
     public function get($key, $default = null)
